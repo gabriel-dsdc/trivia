@@ -29,7 +29,7 @@ class Login extends Component {
       const { name, email } = this.state;
       const { setName, history } = this.props;
       setName({ name, email });
-      history.push('/feedback');
+      history.push('/game');
     }
 
     render() {
