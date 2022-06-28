@@ -8,7 +8,7 @@ class Header extends Component {
     const { name, email, score } = this.props;
 
     return (
-      <div>
+      <header>
         <img
           src={ `https://www.gravatar.com/avatar/${md5(email)}` }
           data-testid="header-profile-picture"
@@ -24,7 +24,7 @@ class Header extends Component {
           Placar:
         </h4>
         <h4 data-testid="header-score">{ score }</h4>
-      </div>
+      </header>
     );
   }
 }
