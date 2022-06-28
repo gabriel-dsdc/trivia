@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { setUserName } from '../Redux/actions/index';
 
 class Login extends Component {
     state = {
@@ -18,6 +21,15 @@ class Login extends Component {
           this.setState({ isDisable: true });
         }
       });
+    }
+
+    // REQUISITO 06, fiz a função apenas para testar se tava funcionando o redux
+    // DEPOIS APAGAR OU CONSERTAR A FUNÇÃO
+    handleClick = () => {
+      const { name, email } = this.state;
+      const { setName, history } = this.props;
+      setName({ name, email });
+      history.push('/game');
     }
 
     render() {
@@ -44,6 +56,7 @@ class Login extends Component {
             type="submit"
             data-testid="btn-play"
             disabled={ isDisable }
+            onClick={ this.handleClick }
           >
             Play
           </button>
@@ -52,4 +65,15 @@ class Login extends Component {
     }
 }
 
-export default Login;
+const mapDispatchToProps = (dispatch) => ({
+  setName: (name, email) => dispatch(setUserName(name, email)),
+});
+
+Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  setName: PropTypes.func.isRequired,
+};
+
+export default connect(null, mapDispatchToProps)(Login);
