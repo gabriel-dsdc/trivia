@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { setUserName } from '../Redux/actions/index';
+import { setUserThunk } from '../Redux/actions/index';
 
 class Login extends Component {
     state = {
@@ -26,11 +26,11 @@ class Login extends Component {
 
     // REQUISITO 06, fiz a função apenas para testar se tava funcionando o redux
     // DEPOIS APAGAR OU CONSERTAR A FUNÇÃO
-    handleClick = () => {
+    handleClick = (event) => {
+      event.preventDefault();
       const { name, email } = this.state;
       const { setName, history } = this.props;
-      setName({ name, email });
-      history.push('/game');
+      setName({ name, email }, history);
     }
 
     render() {
@@ -42,6 +42,7 @@ class Login extends Component {
             type="text"
             data-testid="input-player-name"
             value={ name }
+            placeholder="Nome"
             onChange={ this.handleChange }
           />
 
@@ -50,6 +51,7 @@ class Login extends Component {
             type="email"
             data-testid="input-gravatar-email"
             value={ email }
+            placeholder="Email"
             onChange={ this.handleChange }
           />
 
@@ -75,7 +77,7 @@ class Login extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  setName: (name, email) => dispatch(setUserName(name, email)),
+  setName: ({ name, email }, history) => dispatch(setUserThunk({ name, email }, history)),
 });
 
 Login.propTypes = {
