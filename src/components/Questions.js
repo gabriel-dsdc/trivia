@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+const CORRECT_ANSWER = 'correct-answer';
+
 class Questions extends Component {
   constructor() {
     super();
@@ -8,6 +10,7 @@ class Questions extends Component {
       loading: true,
       trivia: [],
       count: 0,
+      isAnswered: false,
     };
   }
 
@@ -15,8 +18,16 @@ class Questions extends Component {
     this.getQuestions();
   }
 
+  handleClick = () => {
+    this.setState({ isAnswered: true });
+  }
+
+  isCorrect = (answerName) => (answerName === CORRECT_ANSWER
+    ? 'green-border'
+    : 'red-border')
+
   renderQuestion = () => {
-    const { trivia, count } = this.state;
+    const { trivia, count, isAnswered } = this.state;
     if (trivia !== 0) {
       const testMap = trivia.map((triv, index) => ({
         id: index,
@@ -29,7 +40,7 @@ class Questions extends Component {
         name: 'wrong-answer',
         answer: element,
       }));
-      const correctAnswer = { name: 'correct-answer', answer: question.correct_answer };
+      const correctAnswer = { name: CORRECT_ANSWER, answer: question.correct_answer };
       const arrayAnswer = [correctAnswer, ...incorrectAnswers];
 
       const ordenedAnswer = (array) => {
@@ -51,7 +62,11 @@ class Questions extends Component {
                 type="button"
                 data-testid={ eachAnswer.name === 'wrong-answer'
                   ? `wrong-answer-${index}`
-                  : 'correct-answer' }
+                  : CORRECT_ANSWER }
+                className={ isAnswered
+                  ? this.isCorrect(eachAnswer.name)
+                  : '' }
+                onClick={ this.handleClick }
               >
                 { eachAnswer.answer }
               </button>
