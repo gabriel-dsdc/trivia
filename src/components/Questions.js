@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+const CORRECT_ANSWER = 'correct-answer';
 
 class Questions extends Component {
   constructor() {
@@ -7,6 +10,7 @@ class Questions extends Component {
       loading: true,
       trivia: [],
       count: 0,
+      isAnswered: false,
     };
   }
 
@@ -14,8 +18,16 @@ class Questions extends Component {
     this.getQuestions();
   }
 
+  handleClick = () => {
+    this.setState({ isAnswered: true });
+  }
+
+  isCorrect = (answerName) => (answerName === CORRECT_ANSWER
+    ? 'green-border'
+    : 'red-border')
+
   renderQuestion = () => {
-    const { trivia, count } = this.state;
+    const { trivia, count, isAnswered } = this.state;
     if (trivia !== 0) {
       const testMap = trivia.map((triv, index) => ({
         id: index,
@@ -24,46 +36,57 @@ class Questions extends Component {
       const triviaId = testMap;
       const filterQuestions = triviaId.find((triv) => triv.id === count);
       const question = filterQuestions.triv;
-      console.log(question);
       const incorrectAnswers = question.incorrect_answers.map((element) => ({
         name: 'wrong-answer',
         answer: element,
       }));
-      const correctAnswer = { name: 'correct-answer', answer: question.correct_answer };
+      const correctAnswer = { name: CORRECT_ANSWER, answer: question.correct_answer };
       const arrayAnswer = [correctAnswer, ...incorrectAnswers];
-      const numberMagic = -1;
-      // https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
-      const ordenedAnswer = arrayAnswer.sort((a, b) => {
-        if (a.answer > b.answer) { return 1; }
-        if (a.answer < b.answer) { return numberMagic; }
-        return 0; // a must be equal to b
-      });
-      console.log('name:', ordenedAnswer);
+
+      const ordenedAnswer = (array) => {
+        for (let i = array.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      };
+      ordenedAnswer(arrayAnswer);
+
       return (
         <div>
-          <p>{question.category}</p>
-          <p>{question.question}</p>
-          {arrayAnswer.map((eachAnswer, index = 0) => (
-            <button
-              key={ eachAnswer.answer }
-              type="button"
-              data-testid={ eachAnswer.name === 'wrong-answer'
-                ? `wrong-answer-${index}`
-                : 'correct-answer' }
-            >
-              { eachAnswer.answer }
-            </button>
-          ))}
+          <p data-testid="question-category">{question.category}</p>
+          <p data-testid="question-text">{question.question}</p>
+          <div data-testid="answer-options">
+            {arrayAnswer.map((eachAnswer, index = 0) => (
+              <button
+                key={ eachAnswer.answer }
+                type="button"
+                data-testid={ eachAnswer.name === 'wrong-answer'
+                  ? `wrong-answer-${index}`
+                  : CORRECT_ANSWER }
+                className={ isAnswered
+                  ? this.isCorrect(eachAnswer.name)
+                  : '' }
+                onClick={ this.handleClick }
+              >
+                { eachAnswer.answer }
+              </button>
+            ))}
+          </div>
         </div>
       );
     }
   }
 
     getQuestions = async () => {
-      const token = 'a9ae6153fa761459992830486a962f3b0012ad108f5095b1edcf3b0e7057a5f2';
+      const { historyProp } = this.props;
+      const token = localStorage.getItem('token');
       const questions = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
       const questionsTrivia = await questions.json();
-      console.log(questionsTrivia);
+      if (questionsTrivia.results.length === 0) {
+        localStorage.removeItem('token');
+        historyProp.push('/');
+      }
+
       this.setState({
         trivia: [...questionsTrivia.results],
         loading: false,
@@ -80,5 +103,13 @@ class Questions extends Component {
       );
     }
 }
+
+Questions.defaultProps = {
+  historyProp: {},
+};
+
+Questions.propTypes = {
+  historyProp: PropTypes.shape(PropTypes.any),
+};
 
 export default Questions;
