@@ -10,7 +10,6 @@ class Questions extends Component {
     };
   }
 
-  // const randomElement = array[Math.floor(Math.random() * array.length)];
   componentDidMount() {
     this.getQuestions();
   }
