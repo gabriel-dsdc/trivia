@@ -6,6 +6,11 @@ body {
   text-align: center;
 }
 
+@font-face {
+  font-family: nasalization;
+  src: url('fonts/nasalization-rg.otf');
+}
+
 /* @media ( prefers-reduced-motion : no-preference ) {
 
   .App-logo {
@@ -85,6 +90,7 @@ body {
   border-style: solid;
   display: flex;
   flex-direction: row;
+  font-family: nasalization , Verdana , Geneva , Tahoma , sans-serif;
   justify-items: center;
   margin-left: 25px;
   margin-top: 15px;
@@ -99,10 +105,12 @@ body {
 }
 
 .play-button:hover, .settings-button:hover {
+  background-color: rgb(189, 189, 189);
   transform: translate(-3px, -3px);
 }
 
 .email-input:hover, .name-input:hover {
+  background-color: rgb(201, 201, 201);
   transform: translate(-3px, -3px);
   width: 160px;
 }
