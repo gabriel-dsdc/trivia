@@ -42,11 +42,10 @@ class Questions extends Component {
   renderQuestion = ({ trivia }) => {
     const { count } = this.state;
     if (trivia !== 0) {
-      const testMap = trivia.map((triv, index) => ({
+      const triviaId = trivia.map((triv, index) => ({
         id: index,
         triv,
       }));
-      const triviaId = testMap;
       const filterQuestions = triviaId.find((triv) => triv.id === count);
       const question = filterQuestions.triv;
       const incorrectAnswers = question.incorrect_answers.map((element) => ({
