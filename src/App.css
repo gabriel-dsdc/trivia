@@ -6,11 +6,6 @@ body {
   text-align: center;
 }
 
-@font-face {
-  font-family: nasalization;
-  src: url('fonts/nasalization-rg.otf');
-}
-
 /* @media ( prefers-reduced-motion : no-preference ) {
 
   .App-logo {
