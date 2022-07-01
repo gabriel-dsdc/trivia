@@ -2,21 +2,34 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 const CORRECT_ANSWER = 'correct-answer';
+const WRONG_ANSWER = 'wrong-answer';
 
 class Questions extends Component {
   constructor() {
     super();
     this.state = {
       loading: true,
-      trivia: [],
       count: 0,
       isAnswered: false,
+      timer: 30,
     };
   }
 
-  componentDidMount() {
-    this.getQuestions();
+  componentDidMount = async () => {
+    await this.getQuestions();
+    const ONE_SECOND = 1000;
+    this.intervalId = setInterval(this.handleTimer, ONE_SECOND);
   }
+
+  handleTimer = () => {
+    const { timer } = this.state;
+    if (timer !== 0) {
+      this.setState((prevState) => ({ timer: prevState.timer - 1 }));
+    } else {
+      clearInterval(this.intervalId);
+      this.setState({ isAnswered: true });
+    }
+  };
 
   handleClick = () => {
     this.setState({ isAnswered: true });
@@ -26,23 +39,21 @@ class Questions extends Component {
     ? 'green-border'
     : 'red-border')
 
-  renderQuestion = () => {
-    const { trivia, count, isAnswered } = this.state;
+  renderQuestion = ({ trivia }) => {
+    const { count } = this.state;
     if (trivia !== 0) {
-      const testMap = trivia.map((triv, index) => ({
+      const triviaId = trivia.map((triv, index) => ({
         id: index,
         triv,
       }));
-      const triviaId = testMap;
       const filterQuestions = triviaId.find((triv) => triv.id === count);
       const question = filterQuestions.triv;
       const incorrectAnswers = question.incorrect_answers.map((element) => ({
-        name: 'wrong-answer',
+        name: WRONG_ANSWER,
         answer: element,
       }));
       const correctAnswer = { name: CORRECT_ANSWER, answer: question.correct_answer };
       const arrayAnswer = [correctAnswer, ...incorrectAnswers];
-
       const ordenedAnswer = (array) => {
         for (let i = array.length - 1; i > 0; i -= 1) {
           const j = Math.floor(Math.random() * (i + 1));
@@ -50,30 +61,11 @@ class Questions extends Component {
         }
       };
       ordenedAnswer(arrayAnswer);
-
-      return (
-        <div>
-          <p data-testid="question-category">{question.category}</p>
-          <p data-testid="question-text">{question.question}</p>
-          <div data-testid="answer-options">
-            {arrayAnswer.map((eachAnswer, index = 0) => (
-              <button
-                key={ eachAnswer.answer }
-                type="button"
-                data-testid={ eachAnswer.name === 'wrong-answer'
-                  ? `wrong-answer-${index}`
-                  : CORRECT_ANSWER }
-                className={ isAnswered
-                  ? this.isCorrect(eachAnswer.name)
-                  : '' }
-                onClick={ this.handleClick }
-              >
-                { eachAnswer.answer }
-              </button>
-            ))}
-          </div>
-        </div>
-      );
+      this.setState({
+        arrayAnswer,
+        question,
+        loading: false,
+      });
     }
   }
 
@@ -87,29 +79,51 @@ class Questions extends Component {
         historyProp.push('/');
       }
 
-      this.setState({
+      const obj = {
         trivia: [...questionsTrivia.results],
-        loading: false,
-      });
+      };
+      this.renderQuestion(obj);
     };
 
     render() {
-      const { loading } = this.state;
+      const { loading, arrayAnswer, isAnswered, question, timer } = this.state;
       return (
         <div>
           { loading ? <p>Loading...</p>
-            : (this.renderQuestion())}
+            : (
+              <div>
+                <h4>{timer}</h4>
+                <p data-testid="question-category">{question.category}</p>
+                <p data-testid="question-text">{question.question}</p>
+                <div data-testid="answer-options">
+                  {arrayAnswer.map((eachAnswer, index = 0) => (
+                    <button
+                      key={ eachAnswer.answer }
+                      type="button"
+                      data-testid={ eachAnswer.name === WRONG_ANSWER
+                        ? `wrong-answer-${index}`
+                        : CORRECT_ANSWER }
+                      className={ isAnswered
+                        ? this.isCorrect(eachAnswer.name)
+                        : '' }
+                      disabled={ isAnswered }
+                      onClick={ this.handleClick }
+                    >
+                      { eachAnswer.answer }
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
         </div>
       );
     }
 }
 
-Questions.defaultProps = {
-  historyProp: {},
-};
-
 Questions.propTypes = {
-  historyProp: PropTypes.shape(PropTypes.any),
+  historyProp: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
 };
 
 export default Questions;
