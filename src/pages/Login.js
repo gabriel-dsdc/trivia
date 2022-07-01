@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { setUserThunk } from '../Redux/actions/index';
+import { setUserThunk } from '../redux/actions';
 
 class Login extends Component {
     state = {
