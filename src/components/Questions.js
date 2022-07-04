@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { setPlayerScore } from '../redux/actions';
 
 const CORRECT_ANSWER = 'correct-answer';
 const WRONG_ANSWER = 'wrong-answer';
@@ -12,6 +14,7 @@ class Questions extends Component {
       count: 0,
       isAnswered: false,
       timer: 30,
+      score: 0,
     };
   }
 
@@ -31,8 +34,39 @@ class Questions extends Component {
     }
   };
 
-  handleClick = () => {
+  handleClick = ({ target }) => {
     this.setState({ isAnswered: true });
+    const { setScore } = this.props;
+    const { timer } = this.state;
+    const easy = 1;
+    const medium = 2;
+    const hard = 3;
+    const number = 10;
+
+    if (target.name === CORRECT_ANSWER && target.id === 'easy') {
+      this.setState((prevState) => ({
+        score: prevState.score + (number + (timer * easy)),
+      }), () => {
+        const { score } = this.state;
+        setScore(score);
+      });
+    }
+    if (target.name === CORRECT_ANSWER && target.id === 'medium') {
+      this.setState((prevState) => ({
+        score: prevState.score + (number + (timer * medium)),
+      }), () => {
+        const { score } = this.state;
+        setScore(score);
+      });
+    }
+    if (target.name === CORRECT_ANSWER && target.id === 'hard') {
+      this.setState((prevState) => ({
+        score: prevState.score + (number + (timer * hard)),
+      }), () => {
+        const { score } = this.state;
+        setScore(score);
+      });
+    }
   }
 
   isCorrect = (answerName) => (answerName === CORRECT_ANSWER
@@ -41,6 +75,7 @@ class Questions extends Component {
 
   renderQuestion = ({ trivia }) => {
     const { count } = this.state;
+
     if (trivia !== 0) {
       const triviaId = trivia.map((triv, index) => ({
         id: index,
@@ -48,11 +83,16 @@ class Questions extends Component {
       }));
       const filterQuestions = triviaId.find((triv) => triv.id === count);
       const question = filterQuestions.triv;
+      const { difficulty } = question;
       const incorrectAnswers = question.incorrect_answers.map((element) => ({
         name: WRONG_ANSWER,
         answer: element,
+        difficulty,
       }));
-      const correctAnswer = { name: CORRECT_ANSWER, answer: question.correct_answer };
+      const correctAnswer = {
+        name: CORRECT_ANSWER,
+        answer: question.correct_answer,
+        difficulty };
       const arrayAnswer = [correctAnswer, ...incorrectAnswers];
       const ordenedAnswer = (array) => {
         for (let i = array.length - 1; i > 0; i -= 1) {
@@ -99,7 +139,9 @@ class Questions extends Component {
                   {arrayAnswer.map((eachAnswer, index = 0) => (
                     <button
                       key={ eachAnswer.answer }
+                      id={ eachAnswer.difficulty }
                       type="button"
+                      name={ eachAnswer.name }
                       data-testid={ eachAnswer.name === WRONG_ANSWER
                         ? `wrong-answer-${index}`
                         : CORRECT_ANSWER }
@@ -120,10 +162,16 @@ class Questions extends Component {
     }
 }
 
+const mapDispatchToProps = (dispatch) => ({
+  setScore: (score) => dispatch(setPlayerScore(score)),
+});
+
 Questions.propTypes = {
   historyProp: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
+  setScore: PropTypes.func.isRequired,
+
 };
 
-export default Questions;
+export default connect(null, mapDispatchToProps)(Questions);
