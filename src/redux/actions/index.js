@@ -22,7 +22,7 @@ export const setUserThunk = ({ name, email }, history) => async (dispatch) => {
 
 export const setPlayerScore = (score) => ({
   type: PLAYER_SCORE,
-  score,
+  payload: { score },
 });
 
 export const setPlayerAssertions = (assertions) => ({
