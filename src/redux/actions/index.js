@@ -27,5 +27,5 @@ export const setPlayerScore = (score) => ({
 
 export const setPlayerAssertions = (assertions) => ({
   type: PLAYER_ASSERTIONS,
-  assertions,
+  payload: { assertions },
 });
