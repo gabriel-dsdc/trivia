@@ -16,7 +16,7 @@ const playerReducer = (state = INITIAL_STATE, action) => {
   case PLAYER_SCORE:
     return {
       ...state,
-      score: action.score,
+      score: action.payload.score,
     };
   case PLAYER_ASSERTIONS:
     return {
