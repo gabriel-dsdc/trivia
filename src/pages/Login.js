@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { setUserThunk } from '../redux/actions/index';
+import { setUserThunk } from '../redux/actions';
 
 class Login extends Component {
     state = {
@@ -24,8 +24,6 @@ class Login extends Component {
       });
     }
 
-    // REQUISITO 06, fiz a função apenas para testar se tava funcionando o redux
-    // DEPOIS APAGAR OU CONSERTAR A FUNÇÃO
     handleClick = (event) => {
       event.preventDefault();
       const { name, email } = this.state;
