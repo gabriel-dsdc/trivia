@@ -125,6 +125,10 @@ class Questions extends Component {
       this.renderQuestion(obj);
     };
 
+    handleNext = () => {
+      console.log('xablau');
+    }
+
     render() {
       const { loading, arrayAnswer, isAnswered, question, timer } = this.state;
       return (
@@ -155,6 +159,16 @@ class Questions extends Component {
                     </button>
                   ))}
                 </div>
+                {
+                  isAnswered && (
+                    <button
+                      type="button"
+                      onClick={ this.handleNext }
+                      data-testid="btn-next"
+                    >
+                      Next
+                    </button>)
+                }
               </div>
             )}
         </div>
