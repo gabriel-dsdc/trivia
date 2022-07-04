@@ -67,14 +67,15 @@ class Questions extends Component {
         setScore(score);
       });
     }
+    clearInterval(this.intervalId);
   }
 
   isCorrect = (answerName) => (answerName === CORRECT_ANSWER
     ? 'green-border'
     : 'red-border')
 
-  renderQuestion = ({ trivia }) => {
-    const { count } = this.state;
+  renderQuestion = () => {
+    const { count, trivia } = this.state;
 
     if (trivia !== 0) {
       const triviaId = trivia.map((triv, index) => ({
@@ -119,14 +120,30 @@ class Questions extends Component {
         historyProp.push('/');
       }
 
-      const obj = {
+      this.setState({
         trivia: [...questionsTrivia.results],
-      };
-      this.renderQuestion(obj);
+      });
+      this.renderQuestion();
     };
 
     handleNext = () => {
-      console.log('xablau');
+      const { count } = this.state;
+      const { historyProp } = this.props;
+      const ONE_SECOND = 1000;
+      const lastQuestion = 4;
+      clearInterval(this.intervalId);
+      if (count === lastQuestion) {
+        historyProp.push('/feedback');
+      } else {
+        this.setState((prevState) => ({
+          isAnswered: false,
+          timer: 30,
+          count: prevState.count + 1,
+        }), () => {
+          this.renderQuestion();
+          this.intervalId = setInterval(this.handleTimer, ONE_SECOND);
+        });
+      }
     }
 
     render() {
