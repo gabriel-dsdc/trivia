@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { setPlayerScore } from '../redux/actions';
+import { setPlayerAssertions, setPlayerScore } from '../redux/actions';
 
 const CORRECT_ANSWER = 'correct-answer';
 const WRONG_ANSWER = 'wrong-answer';
@@ -15,6 +15,7 @@ class Questions extends Component {
       isAnswered: false,
       timer: 30,
       score: 0,
+      assertions: 0,
     };
   }
 
@@ -34,40 +35,33 @@ class Questions extends Component {
     }
   };
 
-  handleClick = ({ target }) => {
-    this.setState({ isAnswered: true });
-    const { setScore } = this.props;
-    const { timer } = this.state;
-    const easy = 1;
-    const medium = 2;
-    const hard = 3;
-    const number = 10;
+  callback = () => {
+    const { setScore, setAssertions } = this.props;
+    const { score, assertions } = this.state;
 
-    if (target.name === CORRECT_ANSWER && target.id === 'easy') {
-      this.setState((prevState) => ({
-        score: prevState.score + (number + (timer * easy)),
-      }), () => {
-        const { score } = this.state;
-        setScore(score);
-      });
-    }
-    if (target.name === CORRECT_ANSWER && target.id === 'medium') {
-      this.setState((prevState) => ({
-        score: prevState.score + (number + (timer * medium)),
-      }), () => {
-        const { score } = this.state;
-        setScore(score);
-      });
-    }
-    if (target.name === CORRECT_ANSWER && target.id === 'hard') {
-      this.setState((prevState) => ({
-        score: prevState.score + (number + (timer * hard)),
-      }), () => {
-        const { score } = this.state;
-        setScore(score);
-      });
-    }
-    clearInterval(this.intervalId);
+    setScore(score);
+    setAssertions(assertions);
+  }
+
+  handleClick = ({ target }) => {
+    this.setState({ isAnswered: true }, () => {
+      const { timer } = this.state;
+      const difficulty = {
+        easy: 1,
+        medium: 2,
+        hard: 3,
+      };
+      const number = 10;
+
+      if (target.name === CORRECT_ANSWER) {
+        this.setState((prevState) => ({
+          score: prevState.score + (number + (timer * difficulty[target.id])),
+          assertions: prevState.assertions + 1,
+        }), this.callback);
+
+        clearInterval(this.intervalId);
+      }
+    });
   }
 
   isCorrect = (answerName) => (answerName === CORRECT_ANSWER
@@ -195,6 +189,7 @@ class Questions extends Component {
 
 const mapDispatchToProps = (dispatch) => ({
   setScore: (score) => dispatch(setPlayerScore(score)),
+  setAssertions: (assertions) => dispatch(setPlayerAssertions(assertions)),
 });
 
 Questions.propTypes = {
@@ -202,7 +197,7 @@ Questions.propTypes = {
     push: PropTypes.func,
   }).isRequired,
   setScore: PropTypes.func.isRequired,
-
+  setAssertions: PropTypes.func.isRequired,
 };
 
 export default connect(null, mapDispatchToProps)(Questions);

@@ -21,7 +21,7 @@ const playerReducer = (state = INITIAL_STATE, action) => {
   case PLAYER_ASSERTIONS:
     return {
       ...state,
-      assertions: action.assertions,
+      assertions: action.payload.assertions,
     };
   default:
     return state;
