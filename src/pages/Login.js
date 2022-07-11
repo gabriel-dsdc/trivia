@@ -39,7 +39,7 @@ class Login extends Component {
       return (
         <div className="conteiner">
           <form>
-            <div id="input-conteiner">
+            <div className="input-conteiner">
               <input
                 name="name"
                 className="name-input"
@@ -59,6 +59,7 @@ class Login extends Component {
                 placeholder="Email"
                 onChange={ this.handleChange }
               />
+
               <button
                 className="play-button"
                 type="submit"
@@ -77,7 +78,6 @@ class Login extends Component {
                   Configurações
                 </button>
               </Link>
-
             </div>
           </form>
         </div>
