@@ -34,42 +34,50 @@ class Login extends Component {
     render() {
       const { name, email, isDisable } = this.state;
       return (
-        <form>
-          <input
-            name="name"
-            type="text"
-            data-testid="input-player-name"
-            value={ name }
-            placeholder="Nome"
-            onChange={ this.handleChange }
-          />
+        <div className="container">
+          <form>
+            <div className="input-container">
+              <input
+                name="name"
+                className="name-input"
+                type="text"
+                data-testid="input-player-name"
+                value={ name }
+                placeholder="Nome"
+                onChange={ this.handleChange }
+              />
 
-          <input
-            name="email"
-            type="email"
-            data-testid="input-gravatar-email"
-            value={ email }
-            placeholder="Email"
-            onChange={ this.handleChange }
-          />
+              <input
+                name="email"
+                className="email-input"
+                type="email"
+                data-testid="input-gravatar-email"
+                value={ email }
+                placeholder="Email"
+                onChange={ this.handleChange }
+              />
 
-          <button
-            type="submit"
-            data-testid="btn-play"
-            disabled={ isDisable }
-            onClick={ this.handleClick }
-          >
-            Play
-          </button>
-          <Link to="/settings">
-            <button
-              type="button"
-              data-testid="btn-settings"
-            >
-              Configurações
-            </button>
-          </Link>
-        </form>
+              <button
+                className="play-button"
+                type="submit"
+                data-testid="btn-play"
+                disabled={ isDisable }
+                onClick={ this.handleClick }
+              >
+                Play
+              </button>
+              <Link to="/settings">
+                <button
+                  className="settings-button"
+                  type="button"
+                  data-testid="btn-settings"
+                >
+                  Configurações
+                </button>
+              </Link>
+            </div>
+          </form>
+        </div>
       );
     }
 }
