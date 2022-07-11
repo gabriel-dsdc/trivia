@@ -1,9 +1,22 @@
+@font-face {
+  font-family: nasalization;
+  src: local('nasalization') , url('./fonts/nasalization-rg.otf') format('opentype');
+}
+
 body {
   background-color: rgb(0, 39, 58);
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   text-align: center;
+}
+
+.red-border {
+  border: 3px solid red;
+}
+
+.green-border {
+  border: 3px solid rgb(6, 240, 15);
 }
 
 .container {

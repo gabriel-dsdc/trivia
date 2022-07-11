@@ -33,11 +33,10 @@ class Login extends Component {
 
     render() {
       const { name, email, isDisable } = this.state;
-
       return (
-        <div className="conteiner">
+        <div className="container">
           <form>
-            <div className="input-conteiner">
+            <div className="input-container">
               <input
                 name="name"
                 className="name-input"
