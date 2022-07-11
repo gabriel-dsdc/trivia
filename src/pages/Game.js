@@ -4,6 +4,17 @@ import Header from '../components/Header';
 import Questions from '../components/Questions';
 
 class Game extends Component {
+  state = {
+    timer: 30,
+  }
+
+  handleTimer = () => {
+    const { timer } = this.state;
+    if (timer !== 0) {
+      this.setState((prevState) => ({ timer: prevState.timer - 1 }));
+    }
+  };
+
   render() {
     const { history } = this.props;
     return (
@@ -16,12 +27,8 @@ class Game extends Component {
   }
 }
 
-Game.defaultProps = {
-  history: {},
-};
-
 Game.propTypes = {
-  history: PropTypes.shape(PropTypes.any),
+  history: PropTypes.shape(Object).isRequired,
 };
 
 export default Game;
