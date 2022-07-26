@@ -21,8 +21,9 @@ class Header extends Component {
         </h4>
         <h4>
           Placar:
+          {' '}
+          <span data-testid="header-score">{ score }</span>
         </h4>
-        <h4 data-testid="header-score">{ score }</h4>
       </header>
     );
   }

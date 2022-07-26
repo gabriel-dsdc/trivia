@@ -6,6 +6,13 @@ class Ranking extends Component {
     return (
       <>
         <h1 data-testid="ranking-title">Ranking:</h1>
+        {JSON.parse(localStorage.getItem('ranking')).sort((a, b) => b.score - a.score)
+          .map(({ name, score }, index) => (
+            <React.Fragment key={ index }>
+              <p data-testid={ `player-name-${index}` }>{name}</p>
+              <p data-testid={ `player-score-${index}` }>{score}</p>
+            </React.Fragment>
+          ))}
         <Link to="/">
           <button
             data-testid="btn-go-home"
