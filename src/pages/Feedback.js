@@ -5,6 +5,18 @@ import PropTypes from 'prop-types';
 import md5 from 'crypto-js/md5';
 
 class Feedback extends Component {
+  componentDidMount() {
+    const { name, score, gravatarEmail } = this.props;
+    const prevRanking = JSON.parse(localStorage.getItem('ranking')) || [];
+    const ranking = [
+      ...prevRanking,
+      { name,
+        score,
+        picture: `https://www.gravatar.com/avatar/${md5(gravatarEmail)}` },
+    ];
+    localStorage.setItem('ranking', JSON.stringify(ranking));
+  }
+
   render() {
     const { assertions, score, gravatarEmail, name } = this.props;
     const defaultAssertions = 3;

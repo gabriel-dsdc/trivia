@@ -13,6 +13,7 @@ class Questions extends Component {
       loading: true,
       count: 0,
       isAnswered: false,
+      trivia: [],
       timer: 30,
       score: 0,
       assertions: 0,
@@ -20,14 +21,20 @@ class Questions extends Component {
   }
 
   componentDidMount = async () => {
+    const { setScore } = this.props;
+    setScore(0);
     await this.getQuestions();
     const ONE_SECOND = 1000;
     this.intervalId = setInterval(this.handleTimer, ONE_SECOND);
   }
 
+  componentWillUnmount = () => {
+    clearInterval(this.intervalId);
+  };
+
   handleTimer = () => {
     const { timer } = this.state;
-    if (timer !== 0) {
+    if (timer > 0) {
       this.setState((prevState) => ({ timer: prevState.timer - 1 }));
     } else {
       clearInterval(this.intervalId);
@@ -71,7 +78,7 @@ class Questions extends Component {
   renderQuestion = () => {
     const { count, trivia } = this.state;
 
-    if (trivia !== 0) {
+    if (trivia.length !== 0) {
       const triviaId = trivia.map((triv, index) => ({
         id: index,
         triv,
@@ -110,13 +117,14 @@ class Questions extends Component {
       const questions = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
       const questionsTrivia = await questions.json();
       if (questionsTrivia.results.length === 0) {
+        clearInterval(this.intervalId);
         localStorage.removeItem('token');
         historyProp.push('/');
       }
-
       this.setState({
         trivia: [...questionsTrivia.results],
       });
+
       this.renderQuestion();
     };
 
@@ -147,11 +155,11 @@ class Questions extends Component {
           { loading ? <p>Loading...</p>
             : (
               <div>
-                <h4>{timer}</h4>
+                <h4>{`Tempo: ${timer}`}</h4>
                 <p data-testid="question-category">{question.category}</p>
                 <p data-testid="question-text">{question.question}</p>
                 <div data-testid="answer-options">
-                  {arrayAnswer.map((eachAnswer, index = 0) => (
+                  {arrayAnswer.map((eachAnswer, index) => (
                     <button
                       key={ eachAnswer.answer }
                       id={ eachAnswer.difficulty }
